@@ -169,6 +169,9 @@ h2 {
     padding: 20px;
     width: auto;
     height: auto;
+    background: transparent;
+    border: none;
+    box-shadow: 0 0 0 0;
   }
 
   h1 {
