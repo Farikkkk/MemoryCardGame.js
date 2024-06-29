@@ -17,6 +17,16 @@ body {
   min-height: 100vh;
   position: relative;
 }
+
+.name-info {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 2;
+}
+
 .container {
   position: relative;
   display: flex;
@@ -32,11 +42,64 @@ body {
   max-width: 1000px;
 }
 
+.best-result-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.input {
+  padding: 30px 40px;
+  background-color: rgb(164, 164, 36);
+  border: none;
+  font-size: 3rem;
+  text-transform: uppercase;
+  color: beige;
+  border-radius: 14px;
+  font-family: "Neuton", serif;
+  font-weight: 400;
+  font-style: italic;
+  outline: none;
+  box-shadow: 0 0px 8px 0px #0395ea;
+  color: #ea033d;
+  letter-spacing: 0.1rem;
+}
+
+.input::placeholder {
+  color: #ea033d;
+  text-transform: capitalize;
+  letter-spacing: 0.1rem;
+}
+
+.play-button {
+  padding: 30px 60px;
+  margin: 40px;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  letter-spacing: 0.1rem;
+  font-family: "Neuton", serif;
+  font-weight: 600;
+  font-size: 2.5rem;
+  font-style: italic;
+  background-color: aqua;
+  cursor: pointer;
+}
+.play-button:hover {
+  transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
+  background-color: #1ac144;
+  color: black;
+}
+
 h1 {
+  text-align: center;
   color: beige;
   font-size: 3rem;
   text-transform: uppercase;
   letter-spacing: 0.3rem;
+  z-index: 2;
+  margin: 50px;
 }
 
 h2 {
@@ -45,6 +108,12 @@ h2 {
   font-weight: 400;
   font-size: 1.9rem;
   font-style: italic;
+}
+
+.best-res {
+  font-size: 2rem;
+  text-align: center;
+  margin: 1.5rem 0;
 }
 
 .timer {
@@ -94,7 +163,7 @@ h2 {
 
 .card-button {
   padding: 10px 50px;
-  margin: 0 20px;
+  margin: 0 39px;
   border-radius: 40px;
   border: none;
   background-color: #ba0b77;
@@ -104,6 +173,7 @@ h2 {
   font-size: 1.9rem;
   font-style: italic;
   text-align: center;
+  cursor: pointer;
 }
 
 .card-button:hover {
@@ -148,6 +218,7 @@ h2 {
   background-position: center;
   background-size: 60px;
   display: block;
+  opacity: 0.1;
 }
 
 .boxOpen::after {
@@ -175,7 +246,32 @@ h2 {
   }
 
   h1 {
+    font-size: 1.9rem;
+  }
+
+  h2[data-best-result] {
+    font-size: 1.4rem;
+    margin: 0.5rem 0.2em;
+    border-radius: 12px;
+    background-color: #ba0b77;
+    box-shadow: 0 0px 7px -1px #8d8787;
+    color: beige;
+    opacity: 0.7;
+  }
+
+  .input {
+    padding: 1.5rem 0;
     font-size: 2.5rem;
+    text-align: center;
+  }
+  .input::placeholder {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .best-res {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
   }
 
   .timer {
@@ -197,12 +293,14 @@ h2 {
   }
 
   .buttons {
-    flex-direction: column;
     gap: 10px;
+    width: auto;
+    height: auto;
+    display: inline-block;
   }
 
   .card-button {
-    padding: 10px 30px;
+    padding: 10px 17px;
     margin: 10px;
     font-size: 1.5rem;
   }
@@ -210,11 +308,17 @@ h2 {
   .item {
     width: 80px;
     height: 80px;
-    font-size: 2rem;
+    font-size: 3rem;
     border-radius: 12px;
   }
 
   .result {
     font-size: 1.5rem;
   }
+}
+
+.records {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

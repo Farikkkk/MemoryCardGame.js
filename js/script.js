@@ -9,16 +9,113 @@ document.addEventListener("DOMContentLoaded", () => {
   const buttonsDiv = document.querySelector(".buttons");
   const container = document.querySelector(".container");
   const timerContainer = document.querySelector(".timer");
-  const diffucultyDiv = document.querySelector("h2");
+  const diffucultyDiv = document.querySelector(".difficulty-info");
+  const stepsInGame = document.getElementById("steps");
+  const divSteps = document.querySelector(".steps");
+  const bestResultElement = document.getElementById("best-result");
+  const inputEl = document.querySelector("input");
+  const startGameBtn = document.querySelector(".play-button");
+  const bestResultInfo = document.querySelector(".best-result-info");
+  const gameName = document.querySelector("h1");
+  const firstInfoDiv = document.querySelector(".name-info");
 
   let shuffleEmojis;
   let timer;
   let time = 0;
   let timerStarted = false;
-  let numberOfCards = 16;
+  let numberOfCards = ["12", "16", "24"];
+  let steps = 0;
+
+  const localStorageKeys = {
+    12: "memoryGameBestResult12",
+    16: "memoryGameBestResult16",
+    24: "memoryGameBestResult24",
+  };
+
+  // let bestResult = JSON.parse(localStorage.getItem("memoryGameBestResult")) || {
+  //   time: Infinity,
+  //   steps: Infinity,
+  //   inputEl: "",
+  // };
+
+  let bestResult = {
+    12: JSON.parse(localStorage.getItem(localStorageKeys["12"])) || {
+      time: Infinity,
+      steps: Infinity,
+      inputEl: "",
+    },
+
+    16: JSON.parse(localStorage.getItem(localStorageKeys["16"])) || {
+      time: Infinity,
+      steps: Infinity,
+      inputEl: "",
+    },
+
+    24: JSON.parse(localStorage.getItem(localStorageKeys["24"])) || {
+      time: Infinity,
+      steps: Infinity,
+      inputEl: "",
+    },
+  };
+
+  updateBestResultDisplay();
+
+  function updateBestResultDisplay() {
+    Object.keys(bestResult).forEach((level) => {
+      const result = bestResult[level];
+      const element = document.querySelector(`[data-best-result="${level}"]`);
+      if (element) {
+        if (result.time !== Infinity && result.steps !== Infinity) {
+          element.innerHTML = `<br>  Name: ${
+            result.inputEl
+          } <br> Time: (${formatTime(result.time)})<br> Steps: (${
+            result.steps
+          })`;
+        } else {
+          element.innerHTML = " No record found";
+        }
+      } else {
+        console.error(`Element with data-best-result="${level}" not found.`);
+      }
+    });
+  }
+
+  function saveBestResult(timeResult, stepsResult, level) {
+    // Save best result for the specified level
+    bestResult[level].time = timeResult;
+    bestResult[level].steps = stepsResult;
+    bestResult[level].inputEl = inputEl.value;
+    localStorage.setItem(
+      localStorageKeys[level],
+      JSON.stringify(bestResult[level])
+    );
+    updateBestResultDisplay();
+  }
 
   timerContainer.style.display = "none";
   resetBtn.style.display = "none";
+  divSteps.style.display = "none";
+  container.style.display = "none";
+  inputEl.style.display = "block";
+  gameName.style.display = "block";
+
+  startGameBtn.addEventListener("click", () => {
+    if (!inputEl.value) {
+      alert("Please enter your name");
+      return;
+    }
+
+    inputEl.style.display = "none";
+    startGameBtn.style.display = "none";
+    game.style.display = "none";
+    gameName.style.display = "none";
+    buttonsDiv.style.display = "block";
+    timerContainer.style.display = "none";
+    resetBtn.style.display = "none";
+    divSteps.style.display = "none";
+    container.style.display = "flex";
+    createBoard();
+  });
 
   const emojis = [
     "😍",
@@ -62,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createBoard() {
     game.innerHTML = "";
+    resultInfo.innerHTML = "";
     timerStarted = false;
     shuffleEmojis = shuffleArray(
       emojis
@@ -75,6 +173,14 @@ document.addEventListener("DOMContentLoaded", () => {
       box.innerHTML = shuffleEmojis[i];
 
       box.addEventListener("click", function () {
+        if (
+          !this.classList.contains("boxOpen") &&
+          !this.classList.contains("boxMatch")
+        ) {
+          steps++;
+          stepsInGame.innerHTML = `Steps : ${steps}`;
+        }
+
         if (!timerStarted) {
           startTimer();
           timerStarted = true;
@@ -102,9 +208,19 @@ document.addEventListener("DOMContentLoaded", () => {
               document.querySelectorAll(".boxMatch").length === numberOfCards
             ) {
               setTimeout(() => {
-                resultInfo.innerHTML = `Congratulations! You won!`;
+                resultInfo.innerHTML += `Congratulations! You won! 🥳`;
+                document.querySelector(".result").innerHTML += confetti;
                 stopTimer();
-                document.querySelector(".result").innerHTML += confetti; // Add confetti
+
+                if (
+                  time < bestResult[numberOfCards].time ||
+                  (time === bestResult[numberOfCards].time &&
+                    steps < bestResult[numberOfCards].steps)
+                ) {
+                  resultInfo.innerHTML = "Cool!!! It is a new record 😎";
+                  document.querySelector(".result").innerHTML += confetti;
+                  saveBestResult(time, steps, numberOfCards);
+                }
               }, 100);
             }
           }, 500);
@@ -114,12 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  resetBtn.addEventListener("click", () => {
-    window.location.reload();
-    createBoard();
-    stopTimer();
-  });
-
   document.querySelectorAll(".card-button").forEach((button) => {
     button.addEventListener("click", (e) => {
       numberOfCards = parseInt(e.target.dataset.cards);
@@ -127,8 +237,37 @@ document.addEventListener("DOMContentLoaded", () => {
       diffucultyDiv.style.display = "none";
       timerContainer.style.display = "block";
       resetBtn.style.display = "block";
+      game.style.display = "flex";
+      divSteps.style.display = "block";
       container.style.display = "flex";
+      startGameBtn.disabled = false;
+
       createBoard();
     });
   });
+
+  resetBtn.addEventListener("click", () => {
+    steps = 0;
+    stepsInGame.innerHTML = "";
+    timerEl.innerHTML = "00 : 00";
+    firstInfoDiv.style.display = "none";
+    buttonsDiv.style.display = "block";
+    diffucultyDiv.style.display = "block";
+    timerContainer.style.display = "none";
+    resetBtn.style.display = "none";
+    resultInfo.innerHTML = "";
+    game.style.display = "none";
+    divSteps.style.display = "none";
+    container.style.display = "flex";
+    createBoard();
+    stopTimer();
+  });
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")} : ${secs
+      .toString()
+      .padStart(2, "0")}`;
+  }
 });
