@@ -218,7 +218,6 @@ h2 {
   background-position: center;
   background-size: 60px;
   display: block;
-  opacity: 0.1;
 }
 
 .boxOpen::after {
