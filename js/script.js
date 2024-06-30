@@ -57,10 +57,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const serverUrl = "https://memory-card-game-server.herokuapp.com";
 
   async function fetchBestResults() {
-    const response = await fetch(`${serverUrl}/results`);
-    const data = await response.json();
-    bestResult = data;
-    updateBestResultDisplay();
+    try {
+      const response = await fetch(`${serverUrl}/results`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      bestResult = data;
+      updateBestResultDisplay();
+    } catch (error) {
+      console.error("Error fetching best results:", error);
+    }
   }
 
   async function saveBestResultToServer(timeResult, stepsResult, level) {
