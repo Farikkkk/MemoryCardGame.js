@@ -32,12 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     24: "memoryGameBestResult24",
   };
 
-  // let bestResult = JSON.parse(localStorage.getItem("memoryGameBestResult")) || {
-  //   time: Infinity,
-  //   steps: Infinity,
-  //   inputEl: "",
-  // };
-
   let bestResult = {
     12: JSON.parse(localStorage.getItem(localStorageKeys["12"])) || {
       time: Infinity,
@@ -59,6 +53,32 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   updateBestResultDisplay();
+
+  const serverUrl = "https://memory-card-game-server.herokuapp.com";
+
+  async function fetchBestResults() {
+    const response = await fetch(`${serverUrl}/results`);
+    const data = await response.json();
+    bestResult = data;
+    updateBestResultDisplay();
+  }
+
+  async function saveBestResultToServer(timeResult, stepsResult, level) {
+    const response = await fetch(`${serverUrl}/results`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        level,
+        time: timeResult,
+        steps: stepsResult,
+        username: inputEl.value,
+      }),
+    });
+    const message = await response.text();
+    console.log(message);
+  }
 
   function updateBestResultDisplay() {
     Object.keys(bestResult).forEach((level) => {
@@ -89,8 +109,12 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorageKeys[level],
       JSON.stringify(bestResult[level])
     );
+    saveBestResultToServer(timeResult, stepsResult, level);
     updateBestResultDisplay();
+    // updateBestResultDisplay();
   }
+
+  fetchBestResults();
 
   timerContainer.style.display = "none";
   resetBtn.style.display = "none";
