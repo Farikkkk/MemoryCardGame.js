@@ -26,6 +26,9 @@ app.use(
 );
 app.use(bodyParser.json());
 
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, "../public")));
+
 // Mock database for storing best results
 let bestResults = {
   12: { time: Infinity, steps: Infinity, username: "" },
@@ -34,7 +37,7 @@ let bestResults = {
 };
 
 // Load initial data from file (if exists)
-const dataFilePath = "bestResults.json";
+const dataFilePath = path.join(__dirname, "bestResults.json");
 if (fs.existsSync(dataFilePath)) {
   bestResults = JSON.parse(fs.readFileSync(dataFilePath));
 }
@@ -57,6 +60,12 @@ app.post("/results", (req, res) => {
   } else {
     res.status(200).send("No new record.");
   }
+});
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
 app.listen(PORT, () => {
