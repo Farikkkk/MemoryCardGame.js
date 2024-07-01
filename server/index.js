@@ -72,10 +72,10 @@
 //   console.log(`Server is running on port ${PORT}`);
 // });
 
+const path = require("path"); // Добавьте эту строку
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const path = require("path"); // Добавьте эту строку
 const fs = require("fs");
 
 const app = express();
@@ -141,7 +141,7 @@ app.post("/results", (req, res) => {
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
+  res.sendFile(path.join(__dirname, "../public", "index2.html"));
 });
 
 app.listen(PORT, () => {
