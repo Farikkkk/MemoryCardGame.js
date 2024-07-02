@@ -213,7 +213,7 @@ h2 {
   transform: rotateY(0deg);
   backface-visibility: hidden;
   border-radius: 15px;
-  background-image: url("../img/yin-yang.png");
+  background-image: url("/yin-yang.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 60px;
