@@ -163,17 +163,12 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const corsOptions = {
-  origin: "http://127.0.0.1:5501",
-};
-
-app.use(cors(corsOptions));
-
 const allowedOrigins = [
   "http://127.0.0.1:5501",
   "http://localhost:5501",
   "https://your-heroku-app.herokuapp.com",
   "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
+  "https://memory-card-game-bc82cd0751f3.herokuapp.com/",
 ];
 
 app.use(
