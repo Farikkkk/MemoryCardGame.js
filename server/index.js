@@ -152,20 +152,24 @@
 
 //!>>>>>>>>>>>>>>>>>
 
-const path = require("path");
-const express = require("express");
-const cors = require("cors");
-const fs = require("fs").promises;
+// const path = require("path");
+// const express = require("express");
+// const cors = require("cors");
+// const fs = require("fs").promises;
 
-const app = express();
+// const app = express();
 
-app.use(
-  cors({
-    origin: "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
+//   })
+// );
 
-const PORT = process.env.PORT || 5000;
+// const allowedOrigins = [
+//   "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
+// ];
+
+// const PORT = process.env.PORT || 5000;
 
 // const allowedOrigins = [
 //   "http://127.0.0.1:5501",
@@ -192,6 +196,89 @@ const PORT = process.env.PORT || 5000;
 //   })
 // );
 
+// app.use(express.json());
+// app.use(express.static(path.join(__dirname, "../public")));
+
+// let bestResults = {
+//   12: { time: Infinity, steps: Infinity, username: "" },
+//   16: { time: Infinity, steps: Infinity, username: "" },
+//   24: { time: Infinity, steps: Infinity, username: "" },
+// };
+
+// const dataFilePath = path.join(__dirname, "bestResults.json");
+
+// (async () => {
+//   try {
+//     const data = await fs.readFile(dataFilePath, "utf8");
+//     bestResults = JSON.parse(data);
+//   } catch (err) {
+//     console.error(
+//       "No initial data file found or error reading the file:",
+//       err.message
+//     );
+//   }
+// })();
+
+// app.get("/results", (req, res) => {
+//   res.json(bestResults);
+// });
+
+// app.post("/results", async (req, res) => {
+//   const { level, time, steps, username } = req.body;
+//   if (
+//     bestResults[level].time > time ||
+//     (bestResults[level].time === time && bestResults[level].steps > steps)
+//   ) {
+//     bestResults[level] = { time, steps, username };
+//     try {
+//       await fs.writeFile(dataFilePath, JSON.stringify(bestResults));
+//       res.status(200).send("New record saved!");
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send("Error saving the record.");
+//     }
+//   } else {
+//     res.status(200).send("No new record.");
+//   }
+// });
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../public", "index.html"));
+// });
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs").promises;
+const path = require("path");
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+const allowedOrigins = [
+  "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 
@@ -216,6 +303,7 @@ const dataFilePath = path.join(__dirname, "bestResults.json");
 })();
 
 app.get("/results", (req, res) => {
+  console.log("GET /results endpoint hit");
   res.json(bestResults);
 });
 
@@ -236,10 +324,6 @@ app.post("/results", async (req, res) => {
   } else {
     res.status(200).send("No new record.");
   }
-});
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
 app.listen(PORT, () => {
