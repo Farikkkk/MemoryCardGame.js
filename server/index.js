@@ -160,30 +160,36 @@ const fs = require("fs").promises;
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = [
-  "http://127.0.0.1:5501",
-  "http://localhost:5501",
-  "https://your-heroku-app.herokuapp.com",
-  "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
-];
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      console.log(`Request from origin: ${origin}`); // Add this line
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg =
-          "The CORS policy for this site does not allow access from the specified Origin.";
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
-    credentials: true,
+    origin: "http://127.0.0.1:3000",
   })
 );
+
+// const allowedOrigins = [
+//   "http://127.0.0.1:5501",
+//   "http://localhost:5501",
+//   "https://your-heroku-app.herokuapp.com",
+//   "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
+// ];
+
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       console.log(`Request from origin: ${origin}`); // Add this line
+//       if (!origin) return callback(null, true);
+//       if (allowedOrigins.indexOf(origin) === -1) {
+//         const msg =
+//           "The CORS policy for this site does not allow access from the specified Origin.";
+//         return callback(new Error(msg), false);
+//       }
+//       return callback(null, true);
+//     },
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     allowedHeaders: "Content-Type,Authorization",
+//     credentials: true,
+//   })
+// );
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
