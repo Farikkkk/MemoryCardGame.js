@@ -158,13 +158,14 @@ const cors = require("cors");
 const fs = require("fs").promises;
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:5000",
+    origin: "*",
   })
 );
+
+const PORT = process.env.PORT || 5000;
 
 // const allowedOrigins = [
 //   "http://127.0.0.1:5501",
