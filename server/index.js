@@ -161,7 +161,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://floating-meadow-78073-2097b21b377b.herokuapp.com",
   })
 );
 
